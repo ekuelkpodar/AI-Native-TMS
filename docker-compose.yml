@@ -1,0 +1,52 @@
+# UNVERIFIED — docker was not installed on the build VM, so this file has
+# never been built or run. Treat it as a starting layout, not a tested one.
+# Build contexts: ./backend (backend/Dockerfile) and ./frontend
+# (frontend/Dockerfile + nginx.conf) are present.
+
+services:
+  api:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg2://tms:tms@postgres:5432/tms
+      STORAGE_DIR: /data/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - storage:/data/storage
+    command: uvicorn app.main:create_app --factory --host 0.0.0.0 --port 8000
+
+  web:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: tms
+      POSTGRES_PASSWORD: tms
+      POSTGRES_DB: tms
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tms"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    volumes:
+      - redisdata:/data
+    # Reserved for a future background-job queue. Nothing connects to it yet.
+
+volumes:
+  pgdata:
+  redisdata:
+  storage:
