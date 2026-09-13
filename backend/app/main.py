@@ -120,6 +120,25 @@ def create_app() -> FastAPI:
     def health() -> dict:
         return {"status": "ok"}
 
+    # Single-service demo mode: if a built SPA sits next to the app
+    # (the demo Dockerfile copies frontend/dist -> frontend-dist),
+    # serve it at / with SPA fallback. API/docs/health routes above win
+    # because they were registered first.
+    from pathlib import Path
+
+    from fastapi.responses import FileResponse
+
+    spa_dir = Path(__file__).resolve().parent.parent / "frontend-dist"
+    if spa_dir.is_dir():
+
+        @app.get("/", include_in_schema=False)
+        @app.get("/{full_path:path}", include_in_schema=False)
+        def _spa(full_path: str = "") -> FileResponse:
+            candidate = (spa_dir / full_path) if full_path else None
+            if candidate is not None and candidate.is_file():
+                return FileResponse(candidate)
+            return FileResponse(spa_dir / "index.html")
+
     return app
 
 

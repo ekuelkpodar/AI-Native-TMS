@@ -1,0 +1,24 @@
+# Render Blueprint — one-click deploy of the AI-Native TMS demo.
+#
+# Deploy: Render Dashboard → New → Blueprint → select this repo → Apply.
+# Result: one free web service serving the full product (landing page at /,
+# app behind login, demo data seeded on first boot).
+#
+# Notes:
+# - Free-tier services sleep after ~15 min idle and wake on first request.
+# - The container filesystem is ephemeral: the SQLite demo DB resets on
+#   redeploy/restart and seed.py rebuilds fresh demo data automatically.
+# - Set a real JWT_SECRET is generated automatically below.
+
+services:
+  - type: web
+    name: ai-native-tms-demo
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///./tms.db

@@ -239,6 +239,16 @@ All config is env-driven — see `.env.example` (`JWT_SECRET`, `CORS_ORIGINS`,
 `AI_PROVIDER`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `STORAGE_DIR`,
 `VITE_API_URL`).
 
+## Live demo deploy
+
+One-command production image: the FastAPI backend serves the built Vite SPA
+(single service, same-origin `/api/v1`). See [DEPLOY.md](DEPLOY.md).
+
+- **Render (free):** Dashboard → New → Blueprint → select this repo → Apply.
+  `render.yaml` builds the Docker image and seeds demo data on first boot.
+  Demo login: `admin@demo.tms` / `Demo1234!`
+- **Docker:** `docker build -t ai-native-tms . && docker run -p 8000:8000 ai-native-tms`
+
 ## Docker (UNVERIFIED)
 
 `docker-compose.yml` defines `api` (port 8000, Postgres via
@@ -246,10 +256,9 @@ All config is env-driven — see `.env.example` (`JWT_SECRET`, `CORS_ORIGINS`,
 `postgres:16` (volume `pgdata`), and `redis:7` (volume `redisdata`, reserved
 for a future job queue — nothing connects to it yet).
 
-> **UNVERIFIED — docker was not installed on the build VM.** The file has
-> never been built or run. It also expects a `Dockerfile` in each of
-> `./backend` and `./frontend`, which are not included yet. Treat it as a
-> layout sketch, not a working deployment.
+> **UNVERIFIED — docker was not installed on the build VM.** The compose file
+> has never been built or run. For a verified path, use the root `Dockerfile`
+> (single-service demo image) per [DEPLOY.md](DEPLOY.md).
 
 ## Known limitations
 
