@@ -2,7 +2,9 @@ import React from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { getToken, getStoredUser } from "./api/client";
 import Layout from "./components/Layout";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Loads from "./pages/Loads";
 import LoadDetail from "./pages/LoadDetail";
@@ -38,6 +40,12 @@ function RequireRoles({ roles, children }: { roles: string[]; children: React.Re
   return <>{children}</>;
 }
 
+function Home() {
+  // Public landing page for visitors; signed-in users go straight to the app.
+  if (getToken()) return <Navigate to="/dashboard" replace />;
+  return <Landing />;
+}
+
 function NotFound() {
   return (
     <div style={{ padding: 48 }}>
@@ -54,10 +62,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route element={<RequireAuth />}>
           <Route element={<Layout />}>
-            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="loads" element={<Loads />} />
             <Route path="loads/:id" element={<LoadDetail />} />
             <Route path="shipments" element={<Shipments />} />

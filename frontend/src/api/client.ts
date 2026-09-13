@@ -658,6 +658,12 @@ function qs(p?: ListParams): string {
 export const authApi = {
   login: (email: string, password: string) =>
     post<LoginResponse>("/auth/login", { email, password }),
+  register: (data: {
+    full_name: string;
+    company_name: string;
+    email: string;
+    password: string;
+  }) => post<LoginResponse & { organization: Organization }>("/auth/register", data),
   me: () => get<User & { org: Organization }>("/auth/me"),
 };
 

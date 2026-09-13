@@ -7,7 +7,14 @@ agent registry.
 
 ## Product preview
 
+![DispatchOS landing page — 2026-style marketing site with live lane ticker and product preview](docs/screenshot-landing.png)
+
 ![DispatchOS operations dashboard — KPIs, attention-required exceptions, pickups & deliveries, in-transit loads](docs/screenshot-dashboard.png)
+
+The public site (`/`) is a full marketing landing page with **Sign up** and
+**Sign in** in the nav. Self-serve signup (`/signup` →
+`POST /api/v1/auth/register`) provisions a brand-new organization with its first
+admin user. The app itself lives behind auth, with the dashboard at `/dashboard`.
 
 ## Product summary
 
@@ -128,6 +135,8 @@ exceptions, and API smoke — runs with the command above.)
 
 All seed users share the password **`Demo1234!`**. Sign in at `/login`
 or `POST /api/v1/auth/login`.
+Prefer your own workspace? Create one at `/signup` — it calls
+`POST /api/v1/auth/register` and provisions a fresh organization with you as admin.
 
 | Email | Name | Role | Sees |
 |---|---|---|---|

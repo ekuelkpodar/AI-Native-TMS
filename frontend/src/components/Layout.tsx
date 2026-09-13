@@ -12,7 +12,7 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { to: "/", label: "Dashboard", icon: "◈" },
+  { to: "/dashboard", label: "Dashboard", icon: "◈" },
   { to: "/loads", label: "Loads", icon: "▤" },
   { to: "/shipments", label: "Shipments", icon: "▦" },
   { to: "/dispatch", label: "Dispatch", icon: "⤢" },

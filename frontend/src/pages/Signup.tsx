@@ -3,8 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { authApi, setToken, setStoredUser } from "../api/client";
 import "./Landing.css";
 
-export default function Login() {
+export default function Signup() {
   const navigate = useNavigate();
+  const [fullName, setFullName] = useState("");
+  const [company, setCompany] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -12,19 +14,28 @@ export default function Login() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password) {
-      setError("Email and password are required.");
+    if (!fullName.trim() || !company.trim() || !email.trim() || !password) {
+      setError("Please fill in every field.");
+      return;
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const res = await authApi.login(email.trim(), password);
+      const res = await authApi.register({
+        full_name: fullName.trim(),
+        company_name: company.trim(),
+        email: email.trim(),
+        password,
+      });
       setToken(res.access_token);
       setStoredUser(res.user);
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : "Sign up failed");
     } finally {
       setLoading(false);
     }
@@ -41,7 +52,7 @@ export default function Login() {
             DispatchOS
           </Link>
           <div className="lp-nav-cta">
-            <Link to="/signup" className="lp-btn lp-btn-primary lp-btn-sm">Get started →</Link>
+            <Link to="/login" className="lp-btn lp-btn-ghost lp-btn-sm">Sign in</Link>
           </div>
         </div>
       </nav>
@@ -51,18 +62,41 @@ export default function Login() {
             <span className="lp-logo-mark">◈</span>
             DispatchOS
           </Link>
-          <h1>Welcome back</h1>
-          <p className="sub">Sign in to your operations command center.</p>
+          <h1>Create your workspace</h1>
+          <p className="sub">
+            Start your free trial. Your organization, your data, your policies —
+            up and running in under a minute.
+          </p>
           <form onSubmit={submit}>
+            <label className="lp-field">
+              <span>Full name</span>
+              <input
+                className="lp-input"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Ava Mitchell"
+                autoComplete="name"
+              />
+            </label>
+            <label className="lp-field">
+              <span>Company name</span>
+              <input
+                className="lp-input"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder="Demo Logistics Co"
+                autoComplete="organization"
+              />
+            </label>
             <label className="lp-field">
               <span>Work email</span>
               <input
                 className="lp-input"
                 type="email"
-                autoComplete="username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
+                autoComplete="email"
               />
             </label>
             <label className="lp-field">
@@ -70,22 +104,19 @@ export default function Login() {
               <input
                 className="lp-input"
                 type="password"
-                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="At least 8 characters"
+                autoComplete="new-password"
               />
             </label>
             {error && <div className="lp-err">{error}</div>}
-            <button className="lp-btn lp-btn-primary" style={{ width: "100%" }} type="submit" disabled={loading}>
-              {loading ? "Signing in…" : "Sign in →"}
+            <button className="lp-btn lp-btn-primary btn-block" style={{ width: "100%" }} type="submit" disabled={loading}>
+              {loading ? "Creating your workspace…" : "Start free trial →"}
             </button>
           </form>
-          <div className="lp-demo-hint">
-            Exploring? Use the demo workspace — <code>admin@demo.tms</code> / <code>Demo1234!</code>
-          </div>
           <div className="lp-auth-foot">
-            New to DispatchOS? <Link to="/signup">Create an account</Link>
+            Already have an account? <Link to="/login">Sign in</Link>
           </div>
         </div>
       </div>
