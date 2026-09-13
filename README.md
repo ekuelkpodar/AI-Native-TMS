@@ -5,6 +5,10 @@ workflows (loads, dispatch, tracking, carriers, invoicing) under a governed AI
 operations layer — policy engine, approval gates, automation rules, and an
 agent registry.
 
+## Product preview
+
+![DispatchOS operations dashboard — KPIs, attention-required exceptions, pickups & deliveries, in-transit loads](docs/screenshot-dashboard.png)
+
 ## Product summary
 
 For freight brokerages and 3PLs that want an AI copilot inside their TMS rather
